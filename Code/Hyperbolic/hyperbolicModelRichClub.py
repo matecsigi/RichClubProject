@@ -1,6 +1,6 @@
 import sys
 import networkx as nx
-#import igraph
+import igraph
 import math
 from mpmath import *
 import random
@@ -33,16 +33,16 @@ def kClosest(G, id, k):
         dists.append(hyperbolicDistance(G, id, nodesPresent))
     return numpy.argsort(dists)[0:min(id, k)]
 
-#def saveGML(G):
-#    """Saves the network in a gml format."""
-#    g = igraph.Graph(directed=False)
-#    g.add_vertices(G.nodes())
-#    for node in G.nodes():
-#        g.vs[node]["radius"] = G.node[node]["radius"]
-#        g.vs[node]["angle"] = G.node[node]["angle"]
-#        g.add_edges(G.edges())
-#
-#    g.save("hyperbolicModel"+"rand"+str(random.randrange(1, 100))+".gml")
+def saveGML(G, N, limit):
+    """Saves the network in a gml format."""
+    g = igraph.Graph(directed=False)
+    g.add_vertices(G.nodes())
+    for node in G.nodes():
+        g.vs[node]["radius"] = G.node[node]["radius"]
+        g.vs[node]["angle"] = G.node[node]["angle"]
+        g.add_edges(G.edges())
+
+    g.save("hyperbolicModel"+"N"+str(N)+"limit"+str(int(limit))+"rand"+str(random.randrange(1, 100))+".gml")
 
 def wrong_addMiddleNode(G, node1, node2, id):
     """Adds a new node between to nodes."""
@@ -125,4 +125,4 @@ if __name__=='__main__':
         currentNodeID = midNodeID+1
         
     print len(G.nodes())
- #   saveGML(G)
+    saveGML(G, N, limitDistance)
