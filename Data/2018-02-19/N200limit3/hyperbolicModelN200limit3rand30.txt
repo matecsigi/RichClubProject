@@ -1,0 +1,1 @@
+vcount 224 	ecount 616 	avgdeg	 5.5 	avgdeg_in	 5.5 	avgdeg_out	 5.5 	avgdist	 4.32255 	diameter	 8 	max_cluster_size	 224 	max_degree	 17 	clustering	 0.5415818 
