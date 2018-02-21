@@ -5,7 +5,7 @@ import math
 from mpmath import *
 import random
 import numpy
-#import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 
 def hyperbolicRadius(t):
     """Returns the radius corresponding to the parameter value."""
@@ -43,7 +43,7 @@ def saveGML(G, N, limit):
         g.vs[node]["angle"] = G.node[node]["angle"]
     g.add_edges(G.edges())
     print "igraph ", g.ecount()
-    g.save("hyperbolicModel"+"N"+str(N)+"limit"+str(int(limit))+"rand"+str(random.randrange(1, 100))+".gml")
+    g.save("hyperbolicModel"+"N"+str(N)+"limit"+str(limit)+"rand"+str(random.randrange(1, 100))+".gml")
 
 def wrong_addMiddleNode(G, node1, node2, id):
     """Adds a new node between to nodes."""
@@ -129,8 +129,8 @@ if __name__=='__main__':
     print G.number_of_edges()
     saveGML(G, N, limitDistance)
 
-    #rc = nx.rich_club_coefficient(G, normalized=True, Q=10)
-    #plt.plot(rc.keys(),rc.values())
-    #pdfName = "hyperbolicModel"+"N"+str(N)+"limit"+str(int(limit))+"rand"+str(random.randrange(1, 100))+"_rich-club"+".pdf"
-    #plt.savefig(pdfName, format='pdf')
-    #plt.close()
+    rc = nx.rich_club_coefficient(G, normalized=True, Q=500)
+    plt.plot(rc.keys(),rc.values())
+    pdfName = "hyperbolicModel"+"N"+str(N)+"limit"+str(limitDistance)+"rand"+str(random.randrange(1, 100))+"_rich-club"+".pdf"
+    plt.savefig(pdfName, format='pdf')
+    plt.close()
