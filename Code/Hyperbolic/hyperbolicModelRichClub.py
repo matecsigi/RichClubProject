@@ -44,19 +44,6 @@ def saveGML(G, N, limit):
     g.add_edges(G.edges())
     g.save("hyperbolicModel"+"N"+str(N)+"limit"+str(limit)+"rand"+str(random.randrange(1, 100))+".gml")
 
-def wrong_addMiddleNode(G, node1, node2, id):
-    """Adds a new node between to nodes."""
-    angle1 = G.node[node1]["angle"]
-    angle2 = G.node[node2]["angle"]
-    radius1 = G.node[node1]["radius"]
-    radius2 = G.node[node2]["radius"]
-    fi = angle2-angle1
-    fiMid = fi/(1+math.exp(radius1-radius2))
-    radiusMid = 0.5*math.log((2*(1-math.cos(fi)))/((1-math.cos(fiMid))*(1-math.cos(fiMid))))
-    G.add_node(id)
-    G.node[id]["radius"] = radiusMid
-    G.node[id]["angle"] = fiMid+angle1
-
 def addMiddleNode(G, node1, node2, id):
     """Add a new node between two nodes"""
     angle1 = G.node[node1]["angle"]
@@ -94,6 +81,14 @@ def addMiddleNode(G, node1, node2, id):
     else:
         G.node[id]["angle"] = alpha+reference-2*math.pi
 
+def getLimitDistance(t):
+    """Returns the current limit based on the current iteration"""
+    #return math.log(t)*1.25
+    if t < 50:
+        return 2
+    else:
+        return 100
+
 if __name__=='__main__':
 
     N = int(sys.argv[1])
@@ -108,7 +103,7 @@ if __name__=='__main__':
         
         midNodeID = currentNodeID
         for node in kClosest(G, currentNodeID, k):
-            if hyperbolicDistance(G, currentNodeID, node) >= limitDistance:
+            if hyperbolicDistance(G, currentNodeID, node) >= getLimitDistance(t):
                 midNodeID += 1
                 addMiddleNode(G, currentNodeID, node, midNodeID)
                 G.add_edge(currentNodeID, midNodeID)
@@ -128,7 +123,7 @@ if __name__=='__main__':
     print "edges: ", G.number_of_edges()
     saveGML(G, N, limitDistance)
 
-    for i in range(0,3):
+    for i in range(0,10):
         rc = nx.rich_club_coefficient(G, normalized=True, Q=500)
         plt.plot(rc.keys(),rc.values())
         pdfName = "hyperbolicModel"+"N"+str(N)+"limit"+str(limitDistance)+"rand"+str(random.randrange(1, 100))+"_rich-club"+".pdf"
