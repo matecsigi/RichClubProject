@@ -84,10 +84,10 @@ def addMiddleNode(G, node1, node2, id):
 def getLimitDistance(t):
     """Returns the current limit based on the current iteration"""
     #return math.log(t)*1.25
-    if t < 50:
-        return 2
+    if t < 30:
+        return 5
     else:
-        return 100
+        return 1000
 
 if __name__=='__main__':
 
