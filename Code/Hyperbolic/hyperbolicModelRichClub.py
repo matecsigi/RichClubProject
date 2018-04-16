@@ -44,6 +44,18 @@ def saveGML(G, N, limit):
     g.add_edges(G.edges())
     g.save("hyperbolicModel"+"N"+str(N)+"limit"+str(limit)+"rand"+str(random.randrange(1, 100))+".gml")
 
+def saveRichClub(G):
+    try:
+        rc = nx.rich_club_coefficient(G, normalized=True, Q=500)
+        plt.plot(rc.keys(),rc.values())
+        pdfName = "hyperbolicModel"+"N"+str(N)+"limit"+str(limitDistance)+"rand"+str(random.randrange(1, 100))+"_rich-club"+".pdf"
+        plt.savefig(pdfName, format='pdf')
+        plt.close()
+    except:
+        print "new try"
+        saveRichClub(G)
+
+
 def addMiddleNode(G, node1, node2, id):
     """Add a new node between two nodes"""
     angle1 = G.node[node1]["angle"]
@@ -84,10 +96,10 @@ def addMiddleNode(G, node1, node2, id):
 def getLimitDistance(t):
     """Returns the current limit based on the current iteration"""
     #return math.log(t)*1.25
-    if t < 30:
-        return 5
+    if t < 200:
+        return 10000
     else:
-        return 1000
+        return 10000
 
 if __name__=='__main__':
 
@@ -122,10 +134,4 @@ if __name__=='__main__':
     print "nodes: ",len(G.nodes())
     print "edges: ", G.number_of_edges()
     saveGML(G, N, limitDistance)
-
-    for i in range(0,10):
-        rc = nx.rich_club_coefficient(G, normalized=True, Q=500)
-        plt.plot(rc.keys(),rc.values())
-        pdfName = "hyperbolicModel"+"N"+str(N)+"limit"+str(limitDistance)+"rand"+str(random.randrange(1, 100))+"_rich-club"+".pdf"
-        plt.savefig(pdfName, format='pdf')
-        plt.close()
+    saveRichClub(G)
