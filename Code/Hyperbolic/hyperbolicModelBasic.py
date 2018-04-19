@@ -1,3 +1,4 @@
+import sys
 import networkx as nx
 import igraph
 import math
@@ -7,9 +8,26 @@ import numpy
 def hyperbolicRadius(t):
     return math.log(t)
 
-def hyperbolicDistance(radius1, angle1, radius2, angle2, beta=1):
+
+def hyperbolicDistance(G, node1, node2, beta=1):
+    angle1 = G.node[node1]["angle"]
+    angle2 = G.node[node2]["angle"]
+    r1 = G.node[node1]["radius"]
+    r2 = G.node[node2]["radius"]
     deltaAngle = abs(angle1-angle2)
-    return radius1+radius2+math.log(deltaAngle/float(2))
+    if(deltaAngle > math.pi):
+        deltaAngle = 2*math.pi-deltaAngle
+    return r1+r2+math.log(deltaAngle/float(2))
+
+def saveGML(G, N):
+    """Saves the network in a gml format."""
+    g = igraph.Graph(directed=False)
+    g.add_vertices(G.nodes())
+    for node in G.nodes():
+        g.vs[node]["radius"] = G.node[node]["radius"]
+        g.vs[node]["angle"] = G.node[node]["angle"]
+    g.add_edges(G.edges())
+    g.save("hyperbolicModelBasic"+"N"+str(N)+"rand"+str(random.randrange(1, 100))+".gml")
 
 N = int(sys.argv[1])
 k = 3
@@ -23,19 +41,12 @@ for t in range(1, N):
 
     dists = []
     for nodesPresent in range(0, nodeCounter):
-        dists.append(hyperbolicDistance(G.node[nodeCounter]["radius"], G.node[nodeCounter]["angle"], G.node[nodesPresent]["radius"], G.node[nodesPresent]["angle"]))
+        dists.append(hyperbolicDistance(G, nodeCounter, nodesPresent))
 
     nodesToConnect = numpy.argsort(dists)[0:min(nodeCounter, k)]
     for node in nodesToConnect:
         G.add_edge(nodeCounter, node)
     
     nodeCounter += 1
-        
-g = igraph.Graph(directed=False)
-g.add_vertices(G.nodes())
-for node in G.nodes():
-    g.vs[node]["radius"] = G.node[node]["radius"]
-    g.vs[node]["angle"] = G.node[node]["angle"]
-g.add_edges(G.edges())
 
-g.save("orderedModel"+"rand"+str(random.randrange(1, 100))+".gml")
+saveGML(G, N)
