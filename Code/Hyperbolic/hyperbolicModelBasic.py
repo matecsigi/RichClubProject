@@ -4,10 +4,10 @@ import igraph
 import math
 import random
 import numpy
+from mpmath import *
 
 def hyperbolicRadius(t):
     return math.log(t)
-
 
 def hyperbolicDistance(G, node1, node2, beta=1):
     angle1 = G.node[node1]["angle"]
@@ -18,6 +18,16 @@ def hyperbolicDistance(G, node1, node2, beta=1):
     if(deltaAngle > math.pi):
         deltaAngle = 2*math.pi-deltaAngle
     return r1+r2+math.log(deltaAngle/float(2))
+
+def hyperbolicDistance2(G, node1, node2, beta=1):
+    """Calculates the distance between two points in hyperbolic space."""
+    angle1 = G.node[node1]["angle"]
+    angle2 = G.node[node2]["angle"]
+    r1 = G.node[node1]["radius"]
+    r2 = G.node[node2]["radius"]
+    delta = abs(angle1-angle2)
+    #return abs(r1+r2+math.log(sin(delta/float(2))))
+    return acosh(cosh(r1)*cosh(r2)-sinh(r1)*sinh(r2)*cos(delta))
 
 def saveGML(G, N):
     """Saves the network in a gml format."""
@@ -41,7 +51,7 @@ for t in range(1, N):
 
     dists = []
     for nodesPresent in range(0, nodeCounter):
-        dists.append(hyperbolicDistance(G, nodeCounter, nodesPresent))
+        dists.append(hyperbolicDistance2(G, nodeCounter, nodesPresent))
 
     nodesToConnect = numpy.argsort(dists)[0:min(nodeCounter, k)]
     for node in nodesToConnect:
