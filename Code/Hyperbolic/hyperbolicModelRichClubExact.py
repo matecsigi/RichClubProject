@@ -122,8 +122,6 @@ if __name__=='__main__':
     currentNodeID = 0
 
     for t in range(0, N):
-        print t
-        
         addNode(G, currentNodeID)
 
         midNodeID = currentNodeID
