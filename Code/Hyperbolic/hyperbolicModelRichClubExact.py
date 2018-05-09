@@ -113,7 +113,7 @@ if __name__=='__main__':
 
     N = int(sys.argv[1])
     limitDistance = float(sys.argv[2])
-    R = 10
+    R = 12
     k = 3
 
     radiuses = generateRadiuses(N, R)
