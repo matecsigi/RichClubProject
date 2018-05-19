@@ -1,0 +1,1 @@
+vcount 10703 	ecount 30697 	avgdeg	 5.736149 	avgdeg_in	 5.736149 	avgdeg_out	 5.736149 	avgdist	 5.67718 	diameter	 12 	max_cluster_size	 10703 	max_degree	 221 	clustering	 0.444305 
