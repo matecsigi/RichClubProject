@@ -36,24 +36,31 @@ def addMiddleNode(G, node1, node2, id):
     if angleDiff > math.pi:
         angleDiff = 2*math.pi-angleDiff
 
-    angleMiddle = acot((sinh(r2)/sinh(r1))*(1/sin(angleDiff))+cot(angleDiff))
+    angleMiddle = acot((sinh(r2)/sinh(r1))*(1/float(sin(angleDiff)))+cot(angleDiff))
     if angleMiddle < 0:
         angleMiddle = angleMiddle+math.pi
 
-    rMiddle = re(log(sqrt(-cosh(r1)+cosh(r2)-cos(angleMiddle-angleDiff)*sinh(r1)+cos(angleMiddle)*sinh(r2))/sqrt(cosh(r1)-cosh(r2)-cos(angleMiddle-angleDiff)+cos(angleMiddle)*sinh(r2))))
+    #print "angle1=", angle1, " angle2=", angle2, " angleMiddle=", angleMiddle, " angleDiff=", angleDiff
+
+    rMiddle = re(log(sqrt(-cosh(r1)+cosh(r2)-cos(angleMiddle-angleDiff)*sinh(r1)+cos(angleMiddle)*sinh(r2))/sqrt(cosh(r1)-cosh(r2)-cos(angleMiddle-angleDiff)*sinh(r1)+cos(angleMiddle)*sinh(r2))))
+
+    if ((angle1 > angle2) and (angle1-angle2 < math.pi)) or ((angle2 > angle1) and (angle1-angle2 > math.pi)):
+        angleMiddle = angle2-angleMiddle
+    else:
+        angleMiddle = angle2+angleMiddle
+
+    if angleMiddle > 2*math.pi:
+        angleMiddle = angleMiddle-2*math.pi
+
+    if angleMiddle < 0:
+        angleMiddle = angleMiddle+2*math.pi
 
     G.add_node(id)
     G.node[id]["radius"] = rMiddle
     G.node[id]["angle"] = angleMiddle
 
-    print "angle1=", angle1, " angle2=", angle2, " angle=", angleMiddle
-    print "radius1=", r1, " radius2=", r2, " radius=", rMiddle
-
-def fitnessFunction(G, nodeMid, node1, node2):
-    dist1 = hyperbolicDistance(G, node1, nodeMid)
-    dist2 = hyperbolicDistance(G, nodeMid, node2)
-    fitness = 10/(abs(dist1-dist2))+1/(dist1+dist2)
-    return fitness
+    #print "angle1=", angle1, " angle2=", angle2, " angle=", angleMiddle
+    #print "radius1=", r1, " radius2=", r2, " radius=", rMiddle
     
 def addNode(G, id):
     """Adds a node to the network assigning coordinates to it."""
@@ -108,8 +115,13 @@ if __name__=='__main__':
     G = nx.Graph()
     currentNodeID = 0
 
+    bridgeTime = {}
+    bridgeTime[0] = 0
+
     for t in range(0, N):
         addNode(G, currentNodeID)
+
+        bridgeTime[t+1] = bridgeTime[t]
 
         midNodeID = currentNodeID
         for node in kClosest(G, currentNodeID, k):
@@ -119,10 +131,12 @@ if __name__=='__main__':
                 G.add_edge(currentNodeID, midNodeID)
                 G.add_edge(midNodeID, node)
 
-                # dist1 = hyperbolicDistance(G, currentNodeID, midNodeID)
-                # dist2 = hyperbolicDistance(G, midNodeID, node)
-                # distSum = hyperbolicDistance(G, currentNodeID, node)
-                # print dist1+dist2, "==", distSum
+                bridgeTime[t+1] = bridgeTime[t+1]+1
+
+                #dist1 = hyperbolicDistance(G, currentNodeID, midNodeID)
+                #dist2 = hyperbolicDistance(G, midNodeID, node)
+                #distSum = hyperbolicDistance(G, currentNodeID, node)
+                #print dist1+dist2, "==", distSum
 
             else:
                 G.add_edge(currentNodeID, node)
@@ -131,5 +145,7 @@ if __name__=='__main__':
         
     print "nodes: ",len(G.nodes())
     print "edges: ", G.number_of_edges()
-    saveGML(G, N, limitDistance)
-    saveRichClub(G)
+    # saveGML(G, N, limitDistance)
+    # saveRichClub(G)
+
+    print "bridgeTime=", bridgeTime.values()

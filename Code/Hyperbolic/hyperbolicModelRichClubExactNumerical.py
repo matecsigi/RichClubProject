@@ -132,10 +132,10 @@ if __name__=='__main__':
                 G.add_edge(currentNodeID, midNodeID)
                 G.add_edge(midNodeID, node)
 
-                # dist1 = hyperbolicDistance(G, currentNodeID, midNodeID)
-                # dist2 = hyperbolicDistance(G, midNodeID, node)
-                # distSum = hyperbolicDistance(G, currentNodeID, node)
-                # print dist1+dist2, "==", distSum
+                #dist1 = hyperbolicDistance(G, currentNodeID, midNodeID)
+                #dist2 = hyperbolicDistance(G, midNodeID, node)
+                #distSum = hyperbolicDistance(G, currentNodeID, node)
+                #print dist1+dist2, "==", distSum
 
             else:
                 G.add_edge(currentNodeID, node)
