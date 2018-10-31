@@ -96,6 +96,12 @@ def saveRichClub(G):
         print "new try"
         saveRichClub(G)
 
+def saveBridgeTime(bridgeTime):
+    bridgeName = "hyperbolicModel"+"N"+str(N)+"limit"+str(limitDistance)+"rand"+str(random.randrange(1, 100))+"_bridge-time"+".txt"
+    bridgeFile = open(bridgeName, "w")
+    bridgeFile.write(str(bridgeTime.values()))
+    bridgeFile.close()
+
 def generateRadiuses(N, R):
     radiusList = []
     for i in range(0, N):
@@ -145,7 +151,9 @@ if __name__=='__main__':
         
     print "nodes: ",len(G.nodes())
     print "edges: ", G.number_of_edges()
-    # saveGML(G, N, limitDistance)
-    # saveRichClub(G)
 
     print "bridgeTime=", bridgeTime.values()
+    saveBridgeTime(bridgeTime)
+
+    saveGML(G, N, limitDistance)
+    saveRichClub(G)
